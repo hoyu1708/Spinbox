@@ -11,6 +11,10 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QLCDNumber>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -18,14 +22,49 @@ QT_BEGIN_NAMESPACE
 class Ui_Widget
 {
 public:
+    QVBoxLayout *verticalLayout_3;
+    QVBoxLayout *verticalLayout;
+    QSlider *horizontalSlider;
+    QSpinBox *spinBox;
+    QLCDNumber *lcdNumber;
 
     void setupUi(QWidget *Widget)
     {
         if (Widget->objectName().isEmpty())
             Widget->setObjectName("Widget");
         Widget->resize(800, 600);
+        verticalLayout_3 = new QVBoxLayout(Widget);
+        verticalLayout_3->setObjectName("verticalLayout_3");
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName("verticalLayout");
+        horizontalSlider = new QSlider(Widget);
+        horizontalSlider->setObjectName("horizontalSlider");
+        horizontalSlider->setMinimum(-100);
+        horizontalSlider->setMaximum(100);
+        horizontalSlider->setOrientation(Qt::Orientation::Horizontal);
+
+        verticalLayout->addWidget(horizontalSlider);
+
+        spinBox = new QSpinBox(Widget);
+        spinBox->setObjectName("spinBox");
+        spinBox->setMinimum(-100);
+        spinBox->setMaximum(100);
+
+        verticalLayout->addWidget(spinBox);
+
+        lcdNumber = new QLCDNumber(Widget);
+        lcdNumber->setObjectName("lcdNumber");
+
+        verticalLayout->addWidget(lcdNumber);
+
+
+        verticalLayout_3->addLayout(verticalLayout);
+
 
         retranslateUi(Widget);
+        QObject::connect(spinBox, &QSpinBox::valueChanged, horizontalSlider, &QSlider::setValue);
+        QObject::connect(horizontalSlider, &QSlider::valueChanged, spinBox, &QSpinBox::setValue);
+        QObject::connect(spinBox, &QSpinBox::valueChanged, lcdNumber, qOverload<int>(&QLCDNumber::display));
 
         QMetaObject::connectSlotsByName(Widget);
     } // setupUi
